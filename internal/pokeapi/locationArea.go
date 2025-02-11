@@ -1,10 +1,8 @@
-package main
+package pokeapi
 
 import (
 	"encoding/json"
 	"fmt"
-	"io"
-	"net/http"
 	"strconv"
 
 	"github.com/aaroosh-07/pokedexcli/internal/pokecache"
@@ -20,8 +18,8 @@ type PokeApiLocation struct {
 	} `json:"results"`
 }
 
-func getPokeapiLocation(limit, offset int, cache *pokecache.Cache) (PokeApiLocation , error) {
-	var pokeapi_url string = "https://pokeapi.co/api/v2/location-area"
+func GetPokeapiLocation(limit, offset int, cache *pokecache.Cache) (PokeApiLocation , error) {
+	var pokeapi_url string = baseUrl + "/location-area"
 
 	fullUrl := fmt.Sprintf("%s?limit=%s&offset=%s",pokeapi_url, strconv.Itoa(limit), strconv.Itoa(offset))
 
@@ -52,26 +50,4 @@ func getPokeapiLocation(limit, offset int, cache *pokecache.Cache) (PokeApiLocat
 	}
 
 	return resJsonData, nil
-}
-
-func fetchApiData(fullUrl string) ([]byte, error) {
-	res, err := http.Get(fullUrl)
-
-	if err != nil {
-		return []byte{}, fmt.Errorf("network error: %v", err)
-	}
-
-	defer res.Body.Close()
-
-	if res.StatusCode > 299 {
-		return []byte{}, fmt.Errorf("bad response status code: %d", res.StatusCode)
-	}
-
-	resData, err := io.ReadAll(res.Body)
-
-	if err != nil {
-		return []byte{}, fmt.Errorf("error reading data")
-	}
-
-	return resData, nil
 }

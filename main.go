@@ -11,6 +11,7 @@ import (
 
 func main() {
 	//create a new scanner
+	initCommandRegistry()
 	scanner := bufio.NewScanner(os.Stdin)
 	var configInfo = &config{
 		limit: 20,
@@ -32,7 +33,11 @@ func main() {
 			continue
 		}
 
-		cmdInfo.callback(configInfo)
+		err := cmdInfo.callback(configInfo, tokens[1:])
+
+		if err != nil {
+			fmt.Println(err)
+		}
 	}
 }
 
