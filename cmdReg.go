@@ -2,16 +2,19 @@ package main
 
 import (
 	"fmt"
+	"math/rand/v2"
 	"os"
 
 	"github.com/aaroosh-07/pokedexcli/internal/pokeapi"
 	"github.com/aaroosh-07/pokedexcli/internal/pokecache"
+	"github.com/aaroosh-07/pokedexcli/internal/pokedex"
 )
 
 type config struct {
 	limit int
 	offset int
 	cache *pokecache.Cache
+	pokedex *pokedex.PokedexStruct
 }
 
 type cliCommand struct {
@@ -48,6 +51,11 @@ func initCommandRegistry() {
 			name: "explore",
 			description: "explores a particular location in pokemon world and return pokemon names",
 			callback: commandExplore,
+		},
+		"catch": {
+			name: "catch",
+			description: "catches pokemon specified by user",
+			callback: commandCatch,
 		},
 	}
 }
@@ -117,6 +125,49 @@ func commandExplore(c *config, tokens []string) error {
 
 	for _, pokename := range pokemonList {
 		fmt.Println(pokename)
+	}
+
+	return nil
+}
+
+func commandCatch(c *config, tokens []string) error {
+	if len(tokens) < 1 {
+		return fmt.Errorf("pokemon name needed to catch it")
+	}
+
+	fmt.Printf("Throwing a Pokeball at %s...\n", tokens[0])
+
+	var pokeData *pokeapi.PokemonData
+	pokeData, err := pokeapi.FetchPokemonData(tokens[0], c.cache)
+
+	if err != nil {
+		return err
+	}
+
+	//baseExp := pokeData.BaseExperience
+	pokename := pokeData.Name
+
+	catchRoll := rand.IntN(100)
+
+	if catchRoll < 30 {
+		fmt.Printf("%s escaped!\n", pokename)
+		return nil
+	}
+
+	fmt.Printf("%s was caught!\n", pokename)
+
+	success := c.pokedex.Add(pokename, *pokeData)
+
+	if !success {
+		fmt.Println("Cannot add Pokemon to pokedex")
+	}
+
+	return nil
+}
+
+func commandInspect(c *config, tokens []string) error {
+	if len(tokens) < 1 {
+		return fmt.Errorf("pokemon name needed to inspect it")
 	}
 
 	return nil

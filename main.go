@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/aaroosh-07/pokedexcli/internal/pokecache"
+	"github.com/aaroosh-07/pokedexcli/internal/pokedex"
 )
 
 func main() {
@@ -17,6 +18,7 @@ func main() {
 		limit: 20,
 		offset: -20,
 		cache: pokecache.NewCache(),
+		pokedex: pokedex.NewPokedex(),
 	}
 	for {
 		fmt.Print("Pokedex > ")
