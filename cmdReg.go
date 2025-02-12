@@ -57,6 +57,11 @@ func initCommandRegistry() {
 			description: "catches pokemon specified by user",
 			callback: commandCatch,
 		},
+		"inspect": {
+			name: "inspect",
+			description: "display info of pokemon caught",
+			callback: commandInspect,
+		},
 	}
 }
 
@@ -169,6 +174,15 @@ func commandInspect(c *config, tokens []string) error {
 	if len(tokens) < 1 {
 		return fmt.Errorf("pokemon name needed to inspect it")
 	}
+
+	_, isPresent := c.pokedex.Get(tokens[0])
+
+	if !isPresent {
+		fmt.Println("you have not caught that pokemon")
+		return nil
+	}
+
+	c.pokedex.DisplayPokeInfo(tokens[0])
 
 	return nil
 }
