@@ -65,3 +65,17 @@ func (p *PokedexStruct) DisplayPokeInfo(pokename string) error {
 	fmt.Print(pokeInfoStr)
 	return nil
 }
+
+func (p *PokedexStruct) GetNumPokemons() int {
+	return len(p.pokedexInfo)
+}
+
+func (p *PokedexStruct) GetPokemonName() []string {
+	var pokenames = []string{}
+
+	for key := range p.pokedexInfo {
+		pokenames = append(pokenames, key)
+	}
+
+	return pokenames
+}

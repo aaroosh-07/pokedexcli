@@ -62,6 +62,11 @@ func initCommandRegistry() {
 			description: "display info of pokemon caught",
 			callback: commandInspect,
 		},
+		"pokedex": {
+			name: "pokedex",
+			description: "Print names of all pokemon caught",
+			callback: commandPokedex,
+		},
 	}
 }
 
@@ -183,6 +188,23 @@ func commandInspect(c *config, tokens []string) error {
 	}
 
 	c.pokedex.DisplayPokeInfo(tokens[0])
+
+	return nil
+}
+
+func commandPokedex(c *config, _ []string) error {
+	fmt.Println("Your Pokedex:")
+
+	if c.pokedex.GetNumPokemons() == 0 {
+		fmt.Println("No Pokemon Caught")
+		return nil
+	}
+
+	pokenames := c.pokedex.GetPokemonName()
+
+	for _, name := range pokenames {
+		fmt.Printf("\t-%s\n", name)
+	}
 
 	return nil
 }
